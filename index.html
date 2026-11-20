@@ -87,7 +87,189 @@
 
     .main-grid {
       display: grid;
-      grid-
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 850px) {
+      .main-grid {
+        grid-template-columns: 480px 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(8px);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      border: 2px solid #ffffff;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .wheel-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .participant-box {
+      width: 100%;
+      margin-bottom: 12px;
+    }
+
+    label {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #475569;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      padding: 11px 14px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      outline: none;
+      background: white;
+      transition: all 0.2s;
+    }
+
+    input[type="text"]:focus, input[type="number"]:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+    }
+
+    .wheel-wrapper {
+      position: relative;
+      width: 380px;
+      height: 380px;
+      max-width: 88vw;
+      max-height: 88vw;
+      margin: 15px auto 25px auto;
+    }
+
+    canvas#wheelCanvas {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+    }
+
+    .pointer-svg {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 36px;
+      height: 44px;
+      z-index: 25;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #7c3aed, #6d28d9);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(124, 58, 237, 0.35);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-spin {
+      width: 100%;
+      padding: 16px;
+      font-size: 1.2rem;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+      letter-spacing: 0.5px;
+    }
+
+    .btn-spin:hover {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      box-shadow: 0 8px 25px rgba(245, 158, 11, 0.5);
+    }
+
+    .btn-sm {
+      padding: 7px 12px;
+      font-size: 0.85rem;
+      border-radius: 8px;
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      box-shadow: 0 3px 8px rgba(239, 68, 68, 0.25);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      box-shadow: 0 3px 8px rgba(16, 185, 129, 0.25);
+    }
+
+    .slot-row {
+      display: grid;
+      grid-template-columns: 1fr 65px 45px 36px;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .color-picker {
+      height: 40px;
+      width: 100%;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      cursor: pointer;
+      padding: 2px;
+      background: white;
+    }
+
+    .template-controls, .history-controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .history-list {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 8px;
+      background: white;
+      list-style: none;
+    }
+
+    .history-item {
+      padding: 9px 1
 <body>
   <canvas id="confettiCanvas"></canvas>
 
@@ -288,7 +470,7 @@
       const hubGrad = ctx.createRadialGradient(centerX, centerY, 5, centerX, centerY, 32);
       hubGrad.addColorStop(0, '#ffffff');
       hubGrad.addColorStop(0.7, '#fef08a');
-      hubGrad.addColorStop(1, '#f59e0b');
+      hubGrad.addColorStop(1, '#b45309');
       ctx.fillStyle = hubGrad;
       ctx.fill();
       ctx.lineWidth = 4;
