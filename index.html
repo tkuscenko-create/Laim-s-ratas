@@ -43,7 +43,6 @@
       gap: 20px;
     }
 
-    /* Piano Header Banner */
     header {
       position: relative;
       background: linear-gradient(135deg, #7c3aed, #9333ea);
@@ -88,130 +87,71 @@
 
     .main-grid {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
+      grid-
+<body>
+  <canvas id="confettiCanvas"></canvas>
 
-    @media (min-width: 850px) {
-      .main-grid {
-        grid-template-columns: 480px 1fr;
-      }
-    }
+  <div class="win-modal" id="winModal">
+    <h2>🎉 Valio! Laimėjimas!</h2>
+    <p id="winText">-</p>
+    <button class="btn btn-spin" style="padding: 10px 24px; font-size: 1rem;" onclick="closeWinModal()">Šaunu!</button>
+  </div>
 
-    .card {
-      background: var(--card-bg);
-      backdrop-filter: blur(8px);
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: var(--shadow);
-      border: 2px solid #ffffff;
-    }
+  <div class="app-container">
+    <header>
+      <h1>🎹 Muzikos Laimės Ratas 🎶</h1>
+      <p>Fortepijono pamokų motyvaciniai uždaviniai ir prizai</p>
+      <div class="piano-keys"></div>
+    </header>
 
-    .card-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    <div class="main-grid">
+      <div class="card wheel-section">
+        <div class="participant-box">
+          <label for="participantName">👤 Mokinio vardas:</label>
+          <input type="text" id="participantName" placeholder="Įveskite mokinio vardą...">
+        </div>
 
-    .wheel-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+        <div class="wheel-wrapper">
+          <svg class="pointer-svg" viewBox="0 0 36 44">
+            <path d="M 18 44 L 2 8 C 0 4 4 0 8 0 L 28 0 C 32 0 36 4 34 8 Z" fill="#dc2626" stroke="#991b1b" stroke-width="2"/>
+            <circle cx="18" cy="12" r="5" fill="#fef08a"/>
+          </svg>
+          <canvas id="wheelCanvas" width="440" height="440"></canvas>
+        </div>
 
-    .participant-box {
-      width: 100%;
-      margin-bottom: 12px;
-    }
+        <button class="btn btn-spin" id="spinBtn">🎵 SUKTI RATĄ!</button>
+      </div>
 
-    label {
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: #475569;
-      display: block;
-      margin-bottom: 6px;
-    }
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div class="card">
+          <div class="card-title">⚙️ Rato sektoriai ir tikimybės</div>
+          <div id="slotsContainer"></div>
+          <div class="total-prob" id="totalProbLabel">Bendra svorių suma: 100</div>
+          <button class="btn btn-sm btn-success" style="margin-top: 10px;" onclick="addSlot()">+ Pridėti sektorių</button>
+        </div>
 
-    input[type="text"], input[type="number"], select {
-      width: 100%;
-      padding: 11px 14px;
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
-      font-size: 0.95rem;
-      outline: none;
-      background: white;
-      transition: all 0.2s;
-    }
+        <div class="card">
+          <div class="card-title">💾 Rato šablonai</div>
+          <div class="template-controls">
+            <input type="text" id="templateNameInput" placeholder="Šablono pavadinimas...">
+            <button class="btn btn-sm" onclick="saveTemplate()">Išsaugoti</button>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <select id="templateSelect"><option value="">-- Pasirinkite šabloną --</option></select>
+            <button class="btn btn-sm" onclick="loadTemplate()">Užkrauti</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteTemplate()">Ištrinti</button>
+          </div>
+        </div>
 
-    input[type="text"]:focus, input[type="number"]:focus, select:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
-    }
-
-    /* Wheel Canvas & Arrow Pointer */
-    .wheel-wrapper {
-      position: relative;
-      width: 380px;
-      height: 380px;
-      max-width: 88vw;
-      max-height: 88vw;
-      margin: 15px auto 25px auto;
-    }
-
-    canvas#wheelCanvas {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-    }
-
-    .pointer-svg {
-      position: absolute;
-      top: -14px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 36px;
-      height: 44px;
-      z-index: 25;
-      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
-    }
-
-    /* Buttons */
-    .btn {
-      background: linear-gradient(135deg, #7c3aed, #6d28d9);
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 12px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(124, 58, 237, 0.35);
-    }
-
-    .btn:active {
-      transform: translateY(0);
-    }
-
-    .btn-spin {
-      width: 100%;
-      padding: 16px;
-      font-size
+        <div class="card">
+          <div class="card-title">📜 Laimėjimų istorija</div>
+          <ul class="history-list" id="historyList"></ul>
+          <button class="btn btn-sm btn-danger" style="margin-top: 10px;" onclick="clearHistory()">Išvalyti istoriją</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <script>
-    // Initial Bright Musical Default Slices
     let slots = [
       { text: "Gama A-dur", weight: 20, color: "#38bdf8" },
       { text: "Pjesė Mintinai", weight: 20, color: "#a855f7" },
@@ -224,7 +164,6 @@
     let isSpinning = false;
     let audioCtx = null;
 
-    // Web Audio Synthesizer
     function initAudio() {
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -251,7 +190,7 @@
     function playWinSound() {
       if (!audioCtx) return;
       try {
-        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 Fanfare
+        const notes = [523.25, 659.25, 783.99, 1046.50];
         notes.forEach((freq, idx) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
@@ -267,7 +206,6 @@
       } catch(e) {}
     }
 
-    // Canvas Wheel Drawing with Gold Border & Icons
     const canvas = document.getElementById('wheelCanvas');
     const ctx = canvas.getContext('2d');
 
@@ -280,12 +218,11 @@
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
       const outerRadius = canvas.width / 2 - 4;
-      const wheelRadius = outerRadius - 22; // Inner space for golden frame
+      const wheelRadius = outerRadius - 22;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (totalWeight <= 0) return;
 
-      // 1. Gold Frame Outer Ring
       ctx.save();
       ctx.beginPath();
       ctx.arc(centerX, centerY, outerRadius, 0, 2 * Math.PI);
@@ -299,7 +236,6 @@
       ctx.strokeStyle = '#78350f';
       ctx.stroke();
 
-      // Golden rivets / bulbs around outer ring
       const numStuds = 20;
       for (let i = 0; i < numStuds; i++) {
         const studAngle = (i * 2 * Math.PI) / numStuds;
@@ -315,7 +251,6 @@
       }
       ctx.restore();
 
-      // 2. Wheel Slices with Musical Icons
       let startAngle = currentAngle;
       const musicalIcons = ['🎵', '🎹', '🎶', '🎼', '⭐', '🎺', '🎸', '🔔'];
 
@@ -333,7 +268,6 @@
         ctx.strokeStyle = '#ffffff';
         ctx.stroke();
 
-        // Text & Icons
         ctx.save();
         ctx.translate(centerX, centerY);
         ctx.rotate(startAngle + sliceAngle / 2);
@@ -348,7 +282,6 @@
         startAngle += sliceAngle;
       });
 
-      // 3. Center Gold Hub with Music Note
       ctx.save();
       ctx.beginPath();
       ctx.arc(centerX, centerY, 32, 0, 2 * Math.PI);
@@ -370,7 +303,6 @@
       ctx.restore();
     }
 
-    // Spin Logic
     document.getElementById('spinBtn').addEventListener('click', () => {
       initAudio();
       if (isSpinning) return;
@@ -443,7 +375,6 @@
       requestAnimationFrame(animateSpin);
     });
 
-    // UI Slot Control Functions
     function renderSlotsUI() {
       const container = document.getElementById('slotsContainer');
       container.innerHTML = '';
@@ -485,7 +416,6 @@
       renderSlotsUI();
     }
 
-    // Templates
     function saveTemplate() {
       const name = document.getElementById('templateNameInput').value.trim();
       if (!name) { alert("Įveskite šablono pavadinimą!"); return; }
@@ -528,7 +458,6 @@
       updateTemplateDropdown();
     }
 
-    // History
     function addHistoryItem(name, prize) {
       const history = JSON.parse(localStorage.getItem('wheelHistory') || '[]');
       const dateStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -554,7 +483,6 @@
       renderHistoryUI();
     }
 
-    // Win Modal
     function showWinModal(name, text) {
       document.getElementById('winText').innerText = `${name} laimėjo: "${text}"!`;
       document.getElementById('winModal').classList.add('active');
@@ -564,7 +492,6 @@
       document.getElementById('winModal').classList.remove('active');
     }
 
-    // Confetti Effect
     const confettiCanvas = document.getElementById('confettiCanvas');
     const confettiCtx = confettiCanvas.getContext('2d');
     let particles = [];
@@ -610,7 +537,6 @@
       }
     }
 
-    // Init App
     renderSlotsUI();
     updateTemplateDropdown();
     renderHistoryUI();
