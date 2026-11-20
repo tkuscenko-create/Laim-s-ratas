@@ -6,17 +6,16 @@
   <title>Muzikos laimės ratas</title>
   <style>
     :root {
-      --bg-color: #f4f6fb;
-      --card-bg: #ffffff;
-      --primary: #7c5cbf;
-      --primary-hover: #6a4da7;
-      --accent-gold: #f39c12;
-      --accent-green: #2ecc71;
-      --accent-red: #e74c3c;
-      --text-color: #2c3e50;
-      --border-color: #e2e8f0;
-      --radius: 16px;
-      --shadow: 0 10px 25px -5px rgba(124, 92, 191, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      --primary: #7c3aed;
+      --primary-hover: #6d28d9;
+      --gold-main: #f59e0b;
+      --gold-light: #fef08a;
+      --bg-gradient: linear-gradient(135deg, #f3e8ff 0%, #e0e7ff 50%, #fce7f3 100%);
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --text-main: #1e1b4b;
+      --border-color: #cbd5e1;
+      --radius: 20px;
+      --shadow: 0 12px 30px -5px rgba(124, 58, 237, 0.15), 0 4px 12px -2px rgba(0, 0, 0, 0.05);
     }
 
     * {
@@ -27,10 +26,11 @@
     }
 
     body {
-      background-color: var(--bg-color);
-      color: var(--text-color);
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--text-main);
       min-height: 100vh;
-      padding: 20px 10px;
+      padding: 16px 10px;
       display: flex;
       justify-content: center;
     }
@@ -43,25 +43,47 @@
       gap: 20px;
     }
 
+    /* Piano Header Banner */
     header {
-      text-align: center;
-      background: linear-gradient(135deg, #8e44ad, #7c5cbf);
+      position: relative;
+      background: linear-gradient(135deg, #7c3aed, #9333ea);
       color: white;
-      padding: 24px;
+      padding: 24px 20px 36px 20px;
       border-radius: var(--radius);
       box-shadow: var(--shadow);
+      text-align: center;
+      overflow: hidden;
     }
 
     header h1 {
-      font-size: 1.8rem;
-      font-weight: 700;
+      font-size: 1.9rem;
+      font-weight: 800;
       letter-spacing: 0.5px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
     header p {
       font-size: 0.95rem;
-      opacity: 0.9;
+      opacity: 0.95;
       margin-top: 4px;
+    }
+
+    .piano-keys {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 16px;
+      background: repeating-linear-gradient(
+        90deg,
+        #ffffff 0px,
+        #ffffff 12px,
+        #1e1b4b 12px,
+        #1e1b4b 18px,
+        #ffffff 18px,
+        #ffffff 30px
+      );
+      border-top: 2px solid #1e1b4b;
     }
 
     .main-grid {
@@ -78,17 +100,18 @@
 
     .card {
       background: var(--card-bg);
+      backdrop-filter: blur(8px);
       border-radius: var(--radius);
       padding: 20px;
       box-shadow: var(--shadow);
-      border: 1px solid var(--border-color);
+      border: 2px solid #ffffff;
     }
 
     .card-title {
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-weight: 700;
       color: var(--primary);
-      margin-bottom: 15px;
+      margin-bottom: 16px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -98,300 +121,110 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      position: relative;
     }
 
     .participant-box {
       width: 100%;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
     }
 
     label {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #64748b;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #475569;
       display: block;
       margin-bottom: 6px;
     }
 
     input[type="text"], input[type="number"], select {
       width: 100%;
-      padding: 10px 14px;
-      border: 1.5px solid var(--border-color);
-      border-radius: 8px;
+      padding: 11px 14px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
       font-size: 0.95rem;
       outline: none;
-      transition: border-color 0.2s;
+      background: white;
+      transition: all 0.2s;
     }
 
     input[type="text"]:focus, input[type="number"]:focus, select:focus {
       border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
     }
 
+    /* Wheel Canvas & Arrow Pointer */
     .wheel-wrapper {
       position: relative;
-      width: 340px;
-      height: 340px;
-      margin: 10px 0 20px 0;
+      width: 380px;
+      height: 380px;
+      max-width: 88vw;
+      max-height: 88vw;
+      margin: 15px auto 25px auto;
     }
 
     canvas#wheelCanvas {
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     }
 
-    .pointer {
+    .pointer-svg {
       position: absolute;
-      top: -12px;
+      top: -14px;
       left: 50%;
       transform: translateX(-50%);
-      width: 0;
-      height: 0;
-      border-left: 14px solid transparent;
-      border-right: 14px solid transparent;
-      border-top: 24px solid #e74c3c;
-      z-index: 10;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+      width: 36px;
+      height: 44px;
+      z-index: 25;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
     }
 
+    /* Buttons */
     .btn {
-      background: var(--primary);
+      background: linear-gradient(135deg, #7c3aed, #6d28d9);
       color: white;
       border: none;
       padding: 12px 20px;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: 600;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+      transition: all 0.2s;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .btn:hover {
-      background: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(124, 58, 237, 0.35);
     }
 
     .btn:active {
-      transform: scale(0.98);
+      transform: translateY(0);
     }
 
     .btn-spin {
       width: 100%;
-      padding: 14px;
-      font-size: 1.1rem;
-      background: linear-gradient(135deg, #9b59b6, #7c5cbf);
-      box-shadow: 0 4px 15px rgba(124, 92, 191, 0.3);
-    }
-
-    .btn-sm {
-      padding: 6px 12px;
-      font-size: 0.85rem;
-      border-radius: 6px;
-    }
-
-    .btn-danger {
-      background: var(--accent-red);
-    }
-
-    .btn-danger:hover {
-      background: #c0392b;
-    }
-
-    .btn-success {
-      background: var(--accent-green);
-    }
-
-    .btn-success:hover {
-      background: #27ae60;
-    }
-
-    .slot-row {
-      display: grid;
-      grid-template-columns: 1fr 70px 45px 36px;
-      gap: 8px;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .color-picker {
-      height: 38px;
-      width: 100%;
-      border: 1.5px solid var(--border-color);
-      border-radius: 8px;
-      cursor: pointer;
-      padding: 2px;
-    }
-
-    .template-controls, .history-controls {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
-    .history-list {
-      max-height: 200px;
-      overflow-y: auto;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 8px;
-      list-style: none;
-    }
-
-    .history-item {
-      padding: 8px 10px;
-      border-bottom: 1px solid #f1f5f9;
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.9rem;
-    }
-
-    .history-item:last-child {
-      border-bottom: none;
-    }
-
-    .history-name {
-      font-weight: 600;
-      color: var(--primary);
-    }
-
-    canvas#confettiCanvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 100;
-    }
-
-    .win-modal {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.8);
-      background: white;
-      padding: 30px;
-      border-radius: var(--radius);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-      text-align: center;
-      z-index: 101;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-    }
-
-    .win-modal.active {
-      opacity: 1;
-      visibility: visible;
-      transform: translate(-50%, -50%) scale(1);
-    }
-
-    .win-modal h2 {
-      color: var(--primary);
-      margin-bottom: 10px;
-    }
-
-    .win-modal p {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: var(--accent-gold);
-      margin-bottom: 20px;
-    }
-
-    .total-prob {
-      font-size: 0.85rem;
-      color: #64748b;
-      margin-top: 5px;
-      text-align: right;
-    }
-  </style>
-</head>
-<body>
-  <canvas id="confettiCanvas"></canvas>
-
-  <div class="win-modal" id="winModal">
-    <h2>🎉 Laimėjimas!</h2>
-    <p id="winText">-</p>
-    <button class="btn" onclick="closeWinModal()">Gerai</button>
-  </div>
-
-  <div class="app-container">
-    <header>
-      <h1>🎹 Muzikos Laimės Ratas</h1>
-      <p>Fortepijono pamokų motyvaciniai uždaviniai ir prizai</p>
-    </header>
-
-    <div class="main-grid">
-      <!-- Wheel Section -->
-      <div class="card wheel-section">
-        <div class="participant-box">
-          <label for="participantName">Mokinio vardas:</label>
-          <input type="text" id="participantName" placeholder="Įveskite vardą...">
-        </div>
-
-        <div class="wheel-wrapper">
-          <div class="pointer"></div>
-          <canvas id="wheelCanvas" width="400" height="400"></canvas>
-        </div>
-
-        <button class="btn btn-spin" id="spinBtn">🎵 SUKTI RATĄ!</button>
-      </div>
-
-      <!-- Controls & History Section -->
-      <div style="display: flex; flex-direction: column; gap: 20px;">
-        
-        <!-- Slot Editor -->
-        <div class="card">
-          <div class="card-title">⚙️ Rato sektoriai ir tikimybės</div>
-          <div id="slotsContainer"></div>
-          <div class="total-prob" id="totalProbLabel">Bendra tikimybė: 100%</div>
-          <button class="btn btn-sm btn-success" style="margin-top: 10px;" onclick="addSlot()">+ Pridėti sektorių</button>
-        </div>
-
-        <!-- Template Manager -->
-        <div class="card">
-          <div class="card-title">💾 Šablonai</div>
-          <div class="template-controls">
-            <input type="text" id="templateNameInput" placeholder="Šablono pavadinimas...">
-            <button class="btn btn-sm" onclick="saveTemplate()">Išsaugoti</button>
-          </div>
-          <div style="display: flex; gap: 10px; align-items: center;">
-            <select id="templateSelect"><option value="">-- Pasirinkite šabloną --</option></select>
-            <button class="btn btn-sm" onclick="loadTemplate()">Užkrauti</button>
-            <button class="btn btn-sm btn-danger" onclick="deleteTemplate()">Ištrinti</button>
-          </div>
-        </div>
-
-        <!-- History -->
-        <div class="card">
-          <div class="card-title">📜 Laimėjimų istorija</div>
-          <ul class="history-list" id="historyList"></ul>
-          <button class="btn btn-sm btn-danger" style="margin-top: 10px;" onclick="clearHistory()">Išvalyti istoriją</button>
-        </div>
-
-      </div>
-    </div>
-  </div>
+      padding: 16px;
+      font-size
   <script>
-    // Initial Default Data
+    // Initial Bright Musical Default Slices
     let slots = [
-      { text: "Gama A-dur", weight: 20, color: "#a8d8ea" },
-      { text: "Pjesė Mintinai", weight: 20, color: "#aaabb8" },
-      { text: "Saldus Prizas", weight: 10, color: "#f8a5c2" },
-      { text: "Ritmo Pratimas", weight: 25, color: "#b8e994" },
-      { text: "Skaitymas iš natų", weight: 25, color: "#ffd3b6" }
+      { text: "Gama A-dur", weight: 20, color: "#38bdf8" },
+      { text: "Pjesė Mintinai", weight: 20, color: "#a855f7" },
+      { text: "Saldus Prizas", weight: 10, color: "#f43f5e" },
+      { text: "Ritmo Pratimas", weight: 25, color: "#4ade80" },
+      { text: "Skaitymas iš natų", weight: 25, color: "#fbbf24" }
     ];
 
     let currentAngle = 0;
     let isSpinning = false;
     let audioCtx = null;
 
-    // Web Audio Synthesizer (No external MP3 files needed)
+    // Web Audio Synthesizer
     function initAudio() {
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -404,9 +237,9 @@
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'triangle';
-        osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.04);
-        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(620, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.04);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
         gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
@@ -418,23 +251,23 @@
     function playWinSound() {
       if (!audioCtx) return;
       try {
-        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 arpeggio
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 Fanfare
         notes.forEach((freq, idx) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
           osc.type = 'sine';
           osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.1);
-          gain.gain.setValueAtTime(0.2, audioCtx.currentTime + idx * 0.1);
-          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.1 + 0.4);
+          gain.gain.setValueAtTime(0.25, audioCtx.currentTime + idx * 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.1 + 0.45);
           osc.connect(gain);
           gain.connect(audioCtx.destination);
           osc.start(audioCtx.currentTime + idx * 0.1);
-          osc.stop(audioCtx.currentTime + idx * 0.1 + 0.4);
+          osc.stop(audioCtx.currentTime + idx * 0.1 + 0.45);
         });
       } catch(e) {}
     }
 
-    // Canvas Wheel Drawing
+    // Canvas Wheel Drawing with Gold Border & Icons
     const canvas = document.getElementById('wheelCanvas');
     const ctx = canvas.getContext('2d');
 
@@ -446,48 +279,95 @@
       const totalWeight = getTotalWeight();
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
-      const radius = canvas.width / 2 - 10;
+      const outerRadius = canvas.width / 2 - 4;
+      const wheelRadius = outerRadius - 22; // Inner space for golden frame
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (totalWeight <= 0) return;
 
-      let startAngle = currentAngle;
+      // 1. Gold Frame Outer Ring
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, outerRadius, 0, 2 * Math.PI);
+      const outerGrad = ctx.createRadialGradient(centerX, centerY, wheelRadius, centerX, centerY, outerRadius);
+      outerGrad.addColorStop(0, '#fef08a');
+      outerGrad.addColorStop(0.5, '#f59e0b');
+      outerGrad.addColorStop(1, '#b45309');
+      ctx.fillStyle = outerGrad;
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#78350f';
+      ctx.stroke();
 
-      slots.forEach(slot => {
+      // Golden rivets / bulbs around outer ring
+      const numStuds = 20;
+      for (let i = 0; i < numStuds; i++) {
+        const studAngle = (i * 2 * Math.PI) / numStuds;
+        const studX = centerX + (outerRadius - 11) * Math.cos(studAngle);
+        const studY = centerY + (outerRadius - 11) * Math.sin(studAngle);
+        ctx.beginPath();
+        ctx.arc(studX, studY, 4.5, 0, 2 * Math.PI);
+        ctx.fillStyle = (i % 2 === 0) ? '#ffffff' : '#fde047';
+        ctx.fill();
+        ctx.strokeStyle = '#92400e';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // 2. Wheel Slices with Musical Icons
+      let startAngle = currentAngle;
+      const musicalIcons = ['🎵', '🎹', '🎶', '🎼', '⭐', '🎺', '🎸', '🔔'];
+
+      slots.forEach((slot, index) => {
         const sliceAngle = ((parseFloat(slot.weight) || 0) / totalWeight) * 2 * Math.PI;
 
-        // Draw Slice
         ctx.beginPath();
         ctx.moveTo(centerX, centerY);
-        ctx.arc(centerX, centerY, radius, startAngle, startAngle + sliceAngle);
+        ctx.arc(centerX, centerY, wheelRadius, startAngle, startAngle + sliceAngle);
         ctx.closePath();
+
         ctx.fillStyle = slot.color;
         ctx.fill();
-        ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 3;
+        ctx.strokeStyle = '#ffffff';
         ctx.stroke();
 
-        // Draw Text
+        // Text & Icons
         ctx.save();
         ctx.translate(centerX, centerY);
         ctx.rotate(startAngle + sliceAngle / 2);
         ctx.textAlign = "right";
-        ctx.fillStyle = "#2c3e50";
+        ctx.fillStyle = "#1e1b4b";
         ctx.font = "bold 15px 'Segoe UI', sans-serif";
-        ctx.fillText(slot.text, radius - 20, 5);
+        
+        const icon = musicalIcons[index % musicalIcons.length];
+        ctx.fillText(`${icon} ${slot.text}`, wheelRadius - 14, 5);
         ctx.restore();
 
         startAngle += sliceAngle;
       });
 
-      // Inner Hub
+      // 3. Center Gold Hub with Music Note
+      ctx.save();
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 25, 0, 2 * Math.PI);
-      ctx.fillStyle = '#ffffff';
+      ctx.arc(centerX, centerY, 32, 0, 2 * Math.PI);
+      const hubGrad = ctx.createRadialGradient(centerX, centerY, 5, centerX, centerY, 32);
+      hubGrad.addColorStop(0, '#ffffff');
+      hubGrad.addColorStop(0.7, '#fef08a');
+      hubGrad.addColorStop(1, '#f59e0b');
+      ctx.fillStyle = hubGrad;
       ctx.fill();
-      ctx.strokeStyle = '#7c5cbf';
       ctx.lineWidth = 4;
+      ctx.strokeStyle = '#7c3aed';
       ctx.stroke();
+
+      ctx.fillStyle = '#6d28d9';
+      ctx.font = 'bold 22px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🎼', centerX, centerY + 1);
+      ctx.restore();
     }
 
     // Spin Logic
@@ -499,7 +379,6 @@
 
       isSpinning = true;
 
-      // Pick winning index according to probability weights
       let rand = Math.random() * totalWeight;
       let winningIndex = 0;
       let accumulated = 0;
@@ -512,7 +391,6 @@
         }
       }
 
-      // Calculate target angle to stop exactly at top pointer (270 deg = 1.5 * PI)
       let currentAcc = 0;
       for (let i = 0; i < winningIndex; i++) {
         currentAcc += (parseFloat(slots[i].weight) || 0);
@@ -524,7 +402,6 @@
       const pointerAngle = 1.5 * Math.PI;
       let targetFinalAngle = pointerAngle - winTargetAngleOnCircle;
 
-      // Normalize angle
       const fullRotations = (5 + Math.floor(Math.random() * 3)) * 2 * Math.PI;
       const startAngleState = currentAngle % (2 * Math.PI);
       const totalDelta = fullRotations + (targetFinalAngle - startAngleState);
@@ -537,13 +414,11 @@
         const elapsed = now - startTime;
         const progress = Math.min(elapsed / duration, 1);
         
-        // Ease Out Quintic curve
         const easeOut = 1 - Math.pow(1 - progress, 5);
         currentAngle = startAngleState + totalDelta * easeOut;
 
-        // Sound effect on boundary crossing
-        const sliceStep = (2 * Math.PI) / slots.length;
-        if (Math.abs(currentAngle - lastAudioAngle) > sliceStep * 0.8) {
+        const sliceStep = (2 * Math.PI) / (slots.length || 1);
+        if (Math.abs(currentAngle - lastAudioAngle) > sliceStep * 0.7) {
           playTickSound();
           lastAudioAngle = currentAngle;
         }
@@ -596,8 +471,8 @@
     }
 
     function addSlot() {
-      const colors = ["#f8a5c2", "#63cdda", "#ea8685", "#778beb", "#e77f67", "#cf6a87"];
-      slots.push({ text: `Prizas ${slots.length + 1}`, weight: 10, color: colors[slots.length % colors.length] });
+      const colors = ["#f43f5e", "#38bdf8", "#fbbf24", "#4ade80", "#a855f7", "#fb7185"];
+      slots.push({ text: `Užduotis ${slots.length + 1}`, weight: 10, color: colors[slots.length % colors.length] });
       renderSlotsUI();
     }
 
@@ -681,7 +556,7 @@
 
     // Win Modal
     function showWinModal(name, text) {
-      document.getElementById('winText').innerText = `${name} laimėjo: "${text}"`;
+      document.getElementById('winText').innerText = `${name} laimėjo: "${text}"!`;
       document.getElementById('winModal').classList.add('active');
     }
 
@@ -689,7 +564,7 @@
       document.getElementById('winModal').classList.remove('active');
     }
 
-    // Confetti Animation
+    // Confetti Effect
     const confettiCanvas = document.getElementById('confettiCanvas');
     const confettiCtx = confettiCanvas.getContext('2d');
     let particles = [];
@@ -703,7 +578,7 @@
 
     function triggerConfetti() {
       particles = [];
-      const colors = ['#f39c12', '#e74c3c', '#9b59b6', '#3498db', '#2ecc71', '#f1c40f'];
+      const colors = ['#f59e0b', '#ef4444', '#a855f7', '#38bdf8', '#4ade80', '#fbbf24'];
       for (let i = 0; i < 90; i++) {
         particles.push({
           x: window.innerWidth / 2,
