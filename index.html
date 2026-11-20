@@ -633,7 +633,6 @@
     function renderSlotsUI() {
       const container = document.getElementById('slotsContainer');
       container.innerHTML = '';
-      const total = getTotalWeight();
 
       slots.forEach((slot, index) => {
         const row = document.createElement('div');
@@ -647,13 +646,14 @@
         container.appendChild(row);
       });
 
-      document.getElementById('totalProbLabel').innerText = `Bendra svorių suma: ${total}`;
+      document.getElementById('totalProbLabel').innerText = `Bendra svorių suma: ${getTotalWeight()}`;
       drawWheel();
     }
 
     function updateSlot(index, field, value) {
       slots[index][field] = field === 'weight' ? parseFloat(value) || 0 : value;
-      renderSlotsUI();
+      document.getElementById('totalProbLabel').innerText = `Bendra svorių suma: ${getTotalWeight()}`;
+      drawWheel();
     }
 
     function addSlot() {
