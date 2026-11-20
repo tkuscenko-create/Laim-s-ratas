@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Muzikos laimės ratas</title>
+  <style>
+    :root {
+      --bg-color: #f4f6fb;
+      --card-bg: #ffffff;
+      --primary: #7c5cbf;
+      --primary-hover: #6a4da7;
+      --accent-gold: #f39c12;
+      --accent-green: #2ecc71;
+      --accent-red: #e74c3c;
+      --text-color: #2c3e50;
+      --border-color: #e2e8f0;
+      --radius: 16px;
+      --shadow: 0 10px 25px -5px rgba(124, 92, 191, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      padding: 20px 10px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    header {
+      text-align: center;
+      background: linear-gradient(135deg, #8e44ad, #7c5cbf);
+      color: white;
+      padding: 24px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    header p {
+      font-size: 0.95rem;
+      opacity: 0.9;
+      margin-top: 4px;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 850px) {
+      .main-grid {
+        grid-template-columns: 480px 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .wheel-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .participant-box {
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #64748b;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus, input[type="number"]:focus, select:focus {
+      border-color: var(--primary);
+    }
+
+    .wheel-wrapper {
+      position: relative;
+      width: 340px;
+      height: 340px;
+      margin: 10px 0 20px 0;
+    }
+
+    canvas#wheelCanvas {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .pointer {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 14px solid transparent;
+      border-right: 14px solid transparent;
+      border-top: 24px solid #e74c3c;
+      z-index: 10;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-spin {
+      width: 100%;
+      padding: 14px;
+      font-size: 1.1rem;
+      background: linear-gradient(135deg, #9b59b6, #7c5cbf);
+      box-shadow: 0 4px 15px rgba(124, 92, 191, 0.3);
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      border-radius: 6px;
+    }
+
+    .btn-danger {
+      background: var(--accent-red);
+    }
+
+    .btn-danger:hover {
+      background: #c0392b;
+    }
+
+    .btn-success {
+      background: var(--accent-green);
+    }
+
+    .btn-success:hover {
+      background: #27ae60;
+    }
+
+    .slot-row {
+      display: grid;
+      grid-template-columns: 1fr 70px 45px 36px;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .color-picker {
+      height: 38px;
+      width: 100%;
+      border: 1.5px solid var(--border-color);
+      border-radius: 8px;
+      cursor: pointer;
+      padding: 2px;
+    }
+
+    .template-controls, .history-controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .history-list {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px;
+      list-style: none;
+    }
+
+    .history-item {
+      padding: 8px 10px;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
+    }
+
+    .history-name {
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    canvas#confettiCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .win-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      background: white;
+      padding: 30px;
+      border-radius: var(--radius);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      text-align: center;
+      z-index: 101;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .win-modal.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .win-modal h2 {
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .win-modal p {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      margin-bottom: 20px;
+    }
+
+    .total-prob {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-top: 5px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confettiCanvas"></canvas>
+
+  <div class="win-modal" id="winModal">
+    <h2>🎉 Laimėjimas!</h2>
+    <p id="winText">-</p>
+    <button class="btn" onclick="closeWinModal()">Gerai</button>
+  </div>
+
+  <div class="app-container">
+    <header>
+      <h1>🎹 Muzikos Laimės Ratas</h1>
+      <p>Fortepijono pamokų motyvaciniai uždaviniai ir prizai</p>
+    </header>
+
+    <div class="main-grid">
+      <!-- Wheel Section -->
+      <div class="card wheel-section">
+        <div class="participant-box">
+          <label for="participantName">Mokinio vardas:</label>
+          <input type="text" id="participantName" placeholder="Įveskite vardą...">
+        </div>
+
+        <div class="wheel-wrapper">
+          <div class="pointer"></div>
+          <canvas id="wheelCanvas" width="400" height="400"></canvas>
+        </div>
+
+        <button class="btn btn-spin" id="spinBtn">🎵 SUKTI RATĄ!</button>
+      </div>
+
+      <!-- Controls & History Section -->
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        
+        <!-- Slot Editor -->
+        <div class="card">
+          <div class="card-title">⚙️ Rato sektoriai ir tikimybės</div>
+          <div id="slotsContainer"></div>
+          <div class="total-prob" id="totalProbLabel">Bendra tikimybė: 100%</div>
+          <button class="btn btn-sm btn-success" style="margin-top: 10px;" onclick="addSlot()">+ Pridėti sektorių</button>
+        </div>
+
+        <!-- Template Manager -->
+        <div class="card">
+          <div class="card-title">💾 Šablonai</div>
+          <div class="template-controls">
+            <input type="text" id="templateNameInput" placeholder="Šablono pavadinimas...">
+            <button class="btn btn-sm" onclick="saveTemplate()">Išsaugoti</button>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <select id="templateSelect"><option value="">-- Pasirinkite šabloną --</option></select>
+            <button class="btn btn-sm" onclick="loadTemplate()">Užkrauti</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteTemplate()">Ištrinti</button>
+          </div>
+        </div>
+
+        <!-- History -->
+        <div class="card">
+          <div class="card-title">📜 Laimėjimų istorija</div>
+          <ul class="history-list" id="historyList"></ul>
+          <button class="btn btn-sm btn-danger" style="margin-top: 10px;" onclick="clearHistory()">Išvalyti istoriją</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script>
+    // Initial Default Data
+    let slots = [
+      { text: "Gama A-dur", weight: 20, color: "#a8d8ea" },
+      { text: "Pjesė Mintinai", weight: 20, color: "#aaabb8" },
+      { text: "Saldus Prizas", weight: 10, color: "#f8a5c2" },
+      { text: "Ritmo Pratimas", weight: 25, color: "#b8e994" },
+      { text: "Skaitymas iš natų", weight: 25, color: "#ffd3b6" }
+    ];
+
+    let currentAngle = 0;
+    let isSpinning = false;
+    let audioCtx = null;
+
+    // Web Audio Synthesizer (No external MP3 files needed)
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playTickSound() {
+      if (!audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.04);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.04);
+      } catch(e) {}
+    }
+
+    function playWinSound() {
+      if (!audioCtx) return;
+      try {
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 arpeggio
+        notes.forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.1);
+          gain.gain.setValueAtTime(0.2, audioCtx.currentTime + idx * 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.1 + 0.4);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(audioCtx.currentTime + idx * 0.1);
+          osc.stop(audioCtx.currentTime + idx * 0.1 + 0.4);
+        });
+      } catch(e) {}
+    }
+
+    // Canvas Wheel Drawing
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function getTotalWeight() {
+      return slots.reduce((sum, s) => sum + (parseFloat(s.weight) || 0), 0);
+    }
+
+    function drawWheel() {
+      const totalWeight = getTotalWeight();
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const radius = canvas.width / 2 - 10;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (totalWeight <= 0) return;
+
+      let startAngle = currentAngle;
+
+      slots.forEach(slot => {
+        const sliceAngle = ((parseFloat(slot.weight) || 0) / totalWeight) * 2 * Math.PI;
+
+        // Draw Slice
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, startAngle, startAngle + sliceAngle);
+        ctx.closePath();
+        ctx.fillStyle = slot.color;
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        // Draw Text
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(startAngle + sliceAngle / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#2c3e50";
+        ctx.font = "bold 15px 'Segoe UI', sans-serif";
+        ctx.fillText(slot.text, radius - 20, 5);
+        ctx.restore();
+
+        startAngle += sliceAngle;
+      });
+
+      // Inner Hub
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 25, 0, 2 * Math.PI);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.strokeStyle = '#7c5cbf';
+      ctx.lineWidth = 4;
+      ctx.stroke();
+    }
+
+    // Spin Logic
+    document.getElementById('spinBtn').addEventListener('click', () => {
+      initAudio();
+      if (isSpinning) return;
+      const totalWeight = getTotalWeight();
+      if (totalWeight <= 0) return;
+
+      isSpinning = true;
+
+      // Pick winning index according to probability weights
+      let rand = Math.random() * totalWeight;
+      let winningIndex = 0;
+      let accumulated = 0;
+
+      for (let i = 0; i < slots.length; i++) {
+        accumulated += (parseFloat(slots[i].weight) || 0);
+        if (rand <= accumulated) {
+          winningIndex = i;
+          break;
+        }
+      }
+
+      // Calculate target angle to stop exactly at top pointer (270 deg = 1.5 * PI)
+      let currentAcc = 0;
+      for (let i = 0; i < winningIndex; i++) {
+        currentAcc += (parseFloat(slots[i].weight) || 0);
+      }
+      const winSlotWeight = parseFloat(slots[winningIndex].weight) || 0;
+      const winMiddleFraction = (currentAcc + winSlotWeight / 2) / totalWeight;
+      const winTargetAngleOnCircle = winMiddleFraction * 2 * Math.PI;
+
+      const pointerAngle = 1.5 * Math.PI;
+      let targetFinalAngle = pointerAngle - winTargetAngleOnCircle;
+
+      // Normalize angle
+      const fullRotations = (5 + Math.floor(Math.random() * 3)) * 2 * Math.PI;
+      const startAngleState = currentAngle % (2 * Math.PI);
+      const totalDelta = fullRotations + (targetFinalAngle - startAngleState);
+
+      const duration = 4500;
+      const startTime = performance.now();
+      let lastAudioAngle = startAngleState;
+
+      function animateSpin(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Ease Out Quintic curve
+        const easeOut = 1 - Math.pow(1 - progress, 5);
+        currentAngle = startAngleState + totalDelta * easeOut;
+
+        // Sound effect on boundary crossing
+        const sliceStep = (2 * Math.PI) / slots.length;
+        if (Math.abs(currentAngle - lastAudioAngle) > sliceStep * 0.8) {
+          playTickSound();
+          lastAudioAngle = currentAngle;
+        }
+
+        drawWheel();
+
+        if (progress < 1) {
+          requestAnimationFrame(animateSpin);
+        } else {
+          isSpinning = false;
+          playWinSound();
+          triggerConfetti();
+          
+          const wonText = slots[winningIndex].text;
+          const studentName = document.getElementById('participantName').value.trim() || 'Mokinys';
+          
+          showWinModal(studentName, wonText);
+          addHistoryItem(studentName, wonText);
+        }
+      }
+
+      requestAnimationFrame(animateSpin);
+    });
+
+    // UI Slot Control Functions
+    function renderSlotsUI() {
+      const container = document.getElementById('slotsContainer');
+      container.innerHTML = '';
+      const total = getTotalWeight();
+
+      slots.forEach((slot, index) => {
+        const row = document.createElement('div');
+        row.className = 'slot-row';
+        row.innerHTML = `
+          <input type="text" value="${slot.text}" oninput="updateSlot(${index}, 'text', this.value)">
+          <input type="number" min="1" value="${slot.weight}" oninput="updateSlot(${index}, 'weight', this.value)">
+          <input type="color" class="color-picker" value="${slot.color}" onchange="updateSlot(${index}, 'color', this.value)">
+          <button class="btn btn-sm btn-danger" onclick="removeSlot(${index})">✕</button>
+        `;
+        container.appendChild(row);
+      });
+
+      document.getElementById('totalProbLabel').innerText = `Bendra svorių suma: ${total}`;
+      drawWheel();
+    }
+
+    function updateSlot(index, field, value) {
+      slots[index][field] = field === 'weight' ? parseFloat(value) || 0 : value;
+      renderSlotsUI();
+    }
+
+    function addSlot() {
+      const colors = ["#f8a5c2", "#63cdda", "#ea8685", "#778beb", "#e77f67", "#cf6a87"];
+      slots.push({ text: `Prizas ${slots.length + 1}`, weight: 10, color: colors[slots.length % colors.length] });
+      renderSlotsUI();
+    }
+
+    function removeSlot(index) {
+      if (slots.length <= 2) {
+        alert("Ratas privalo turėti bent 2 sektorius!");
+        return;
+      }
+      slots.splice(index, 1);
+      renderSlotsUI();
+    }
+
+    // Templates
+    function saveTemplate() {
+      const name = document.getElementById('templateNameInput').value.trim();
+      if (!name) { alert("Įveskite šablono pavadinimą!"); return; }
+      const templates = JSON.parse(localStorage.getItem('wheelTemplates') || '{}');
+      templates[name] = slots;
+      localStorage.setItem('wheelTemplates', JSON.stringify(templates));
+      document.getElementById('templateNameInput').value = '';
+      updateTemplateDropdown();
+      alert(`Šablonas "${name}" išsaugotas!`);
+    }
+
+    function updateTemplateDropdown() {
+      const select = document.getElementById('templateSelect');
+      select.innerHTML = '<option value="">-- Pasirinkite šabloną --</option>';
+      const templates = JSON.parse(localStorage.getItem('wheelTemplates') || '{}');
+      Object.keys(templates).forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        select.appendChild(opt);
+      });
+    }
+
+    function loadTemplate() {
+      const name = document.getElementById('templateSelect').value;
+      if (!name) return;
+      const templates = JSON.parse(localStorage.getItem('wheelTemplates') || '{}');
+      if (templates[name]) {
+        slots = JSON.parse(JSON.stringify(templates[name]));
+        renderSlotsUI();
+      }
+    }
+
+    function deleteTemplate() {
+      const name = document.getElementById('templateSelect').value;
+      if (!name) return;
+      const templates = JSON.parse(localStorage.getItem('wheelTemplates') || '{}');
+      delete templates[name];
+      localStorage.setItem('wheelTemplates', JSON.stringify(templates));
+      updateTemplateDropdown();
+    }
+
+    // History
+    function addHistoryItem(name, prize) {
+      const history = JSON.parse(localStorage.getItem('wheelHistory') || '[]');
+      const dateStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      history.unshift({ name, prize, time: dateStr });
+      localStorage.setItem('wheelHistory', JSON.stringify(history));
+      renderHistoryUI();
+    }
+
+    function renderHistoryUI() {
+      const history = JSON.parse(localStorage.getItem('wheelHistory') || '[]');
+      const list = document.getElementById('historyList');
+      list.innerHTML = '';
+      history.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'history-item';
+        li.innerHTML = `<span><span class="history-name">${item.name}</span>: ${item.prize}</span><span style="color:#94a3b8; font-size:0.8rem;">${item.time}</span>`;
+        list.appendChild(li);
+      });
+    }
+
+    function clearHistory() {
+      localStorage.removeItem('wheelHistory');
+      renderHistoryUI();
+    }
+
+    // Win Modal
+    function showWinModal(name, text) {
+      document.getElementById('winText').innerText = `${name} laimėjo: "${text}"`;
+      document.getElementById('winModal').classList.add('active');
+    }
+
+    function closeWinModal() {
+      document.getElementById('winModal').classList.remove('active');
+    }
+
+    // Confetti Animation
+    const confettiCanvas = document.getElementById('confettiCanvas');
+    const confettiCtx = confettiCanvas.getContext('2d');
+    let particles = [];
+
+    function resizeConfetti() {
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeConfetti);
+    resizeConfetti();
+
+    function triggerConfetti() {
+      particles = [];
+      const colors = ['#f39c12', '#e74c3c', '#9b59b6', '#3498db', '#2ecc71', '#f1c40f'];
+      for (let i = 0; i < 90; i++) {
+        particles.push({
+          x: window.innerWidth / 2,
+          y: window.innerHeight / 2,
+          vx: (Math.random() - 0.5) * 14,
+          vy: (Math.random() - 0.7) * 14,
+          size: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          life: 100
+        });
+      }
+      animateConfetti();
+    }
+
+    function animateConfetti() {
+      confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      particles.forEach((p, index) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.25;
+        p.life -= 1.5;
+        confettiCtx.fillStyle = p.color;
+        confettiCtx.fillRect(p.x, p.y, p.size, p.size);
+        if (p.life <= 0) particles.splice(index, 1);
+      });
+
+      if (particles.length > 0) {
+        requestAnimationFrame(animateConfetti);
+      }
+    }
+
+    // Init App
+    renderSlotsUI();
+    updateTemplateDropdown();
+    renderHistoryUI();
+  </script>
+</body>
+</html>
